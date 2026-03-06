@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { ArrowLeft, Plus, Calendar, Sparkles, FileText } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, Sparkles, FileText, Share2 } from 'lucide-react';
+import { ShareJourneyModal } from './ShareJourneyModal';
 
 interface Journey {
   id: string;
@@ -52,6 +53,7 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [loading, setLoading] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     loadJourney();
@@ -110,6 +112,36 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
     return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   }
 
+  async function prepareTripData() {
+    const allDaysData = await Promise.all(
+      days.map(async (day) => {
+        const { data: dayExperiences } = await supabase
+          .from('experiences')
+          .select('*')
+          .eq('day_id', day.id)
+          .order('time', { ascending: true });
+
+        return {
+          date: day.date,
+          experiences: (dayExperiences || []).map(exp => ({
+            time: exp.time,
+            title: exp.title,
+            type: exp.category,
+            note: exp.concierge_details,
+          })),
+        };
+      })
+    );
+
+    return {
+      title: journey!.title,
+      destination: journey!.destination,
+      startDate: journey!.depart_date,
+      endDate: journey!.return_date,
+      days: allDaysData,
+    };
+  }
+
   if (loading || !journey) {
     return (
       <div className="min-h-screen pt-20 flex items-center justify-center">
@@ -149,13 +181,25 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
             </div>
           </div>
 
-          <button
-            onClick={onViewSummary}
-            className="w-full px-4 py-3 border border-voya-gold/40 text-voya-gold hover:bg-voya-gold/10 transition-all duration-300 font-montserrat text-xs tracking-wider uppercase flex items-center justify-center gap-2"
-          >
-            <FileText size={14} />
-            View Summary →
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={onViewSummary}
+              className="w-full px-4 py-3 border border-voya-gold/40 text-voya-gold hover:bg-voya-gold/10 transition-all duration-300 font-montserrat uppercase flex items-center justify-center gap-2"
+              style={{ fontSize: '9px', letterSpacing: '2px' }}
+            >
+              <FileText size={14} />
+              View Summary →
+            </button>
+
+            <button
+              onClick={() => setShareModalOpen(true)}
+              className="w-full px-4 py-3 border border-voya-gold/40 text-voya-gold hover:bg-voya-gold/10 transition-all duration-300 font-montserrat uppercase flex items-center justify-center gap-2"
+              style={{ fontSize: '9px', letterSpacing: '2px' }}
+            >
+              <Share2 size={14} />
+              ⟶ Share Journey
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -226,6 +270,18 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
           )}
         </div>
       </main>
+
+      <ShareJourneyModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        tripData={journey && days.length > 0 ? prepareTripData : async () => ({
+          title: '',
+          destination: '',
+          startDate: '',
+          endDate: '',
+          days: [],
+        })}
+      />
     </div>
   );
 }
