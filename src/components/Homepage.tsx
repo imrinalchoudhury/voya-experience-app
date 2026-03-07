@@ -261,6 +261,7 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, onReserve, isC
         )}
 
         <div
+          className="relative"
           onMouseEnter={() => setShowMenu(true)}
           onMouseLeave={() => setShowMenu(false)}
         >
@@ -274,7 +275,7 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, onReserve, isC
             ⋯
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-full mt-2 bg-[#111009] border border-voya-gold/20 min-w-[160px] z-10">
+            <div className="absolute right-0 top-full bg-[#111009] border border-voya-gold/20 min-w-[160px] z-10 pt-1">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
