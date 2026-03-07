@@ -13,6 +13,17 @@ export function Header({ onNewJourney, buttonText = 'New Experience', currentVie
   const { user, signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const getUserDisplayName = () => {
+    if (!user) return '';
+
+    const fullName = user.user_metadata?.full_name;
+    if (fullName) {
+      return fullName.split(' ')[0];
+    }
+
+    return user.email?.split('@')[0] || '';
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-voya-black/90 backdrop-blur-sm border-b border-voya-gold/10">
       <div className="max-w-[1600px] mx-auto px-12 h-20 flex items-center justify-between">
@@ -64,7 +75,7 @@ export function Header({ onNewJourney, buttonText = 'New Experience', currentVie
               onMouseLeave={() => setShowUserMenu(false)}
             >
               <button className="text-voya-gold/60 hover:text-voya-gold font-montserrat text-xs tracking-wide transition-colors">
-                {user.email}
+                {getUserDisplayName()}
               </button>
 
               {showUserMenu && (
