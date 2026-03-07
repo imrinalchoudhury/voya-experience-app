@@ -120,11 +120,12 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
         <form onSubmit={handleSubmit} className="p-12 space-y-8">
           <div>
             <label className="block font-montserrat text-xs text-voya-gold/60 tracking-wider uppercase mb-3">
-              Experience Title
+              Journey Title
             </label>
             <input
               type="text"
               required
+              minLength={1}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-cormorant text-2xl text-white transition-colors"
@@ -139,6 +140,7 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
             <input
               type="text"
               required
+              minLength={1}
               value={formData.destination}
               onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
               className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-cormorant text-2xl text-white transition-colors mb-4"
@@ -165,6 +167,7 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
             <input
               type="text"
               required
+              minLength={1}
               value={formData.tagline}
               onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
               className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-cormorant italic text-xl text-white transition-colors"
