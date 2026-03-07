@@ -9,12 +9,14 @@ import { SplashScreen } from './components/SplashScreen';
 import { TripSummary } from './components/TripSummary';
 import { AuthScreen } from './components/AuthScreen';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { DataLoader } from './components/DataLoader';
+import { supabase } from './lib/supabase';
+import { loadSampleData } from './scripts/loadSampleData';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [view, setView] = useState<'home' | 'journey'>('home');
   const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null);
   const [showNewJourneyModal, setShowNewJourneyModal] = useState(false);
@@ -36,11 +38,32 @@ function AppContent() {
     if (!loading && !showSplash) {
       if (!user) {
         setShowAuth(true);
+        setDataLoaded(true);
       } else {
         setShowAuth(false);
       }
     }
   }, [user, loading, showSplash]);
+
+  useEffect(() => {
+    const initData = async () => {
+      if (!user || loading) return;
+
+      const { data: journeys } = await supabase
+        .from('journeys')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (!journeys || journeys.length === 0) {
+        await loadSampleData(user.id);
+      }
+
+      setDataLoaded(true);
+    };
+
+    initData();
+  }, [user, loading]);
 
   function handleJourneyClick(journeyId: string) {
     setSelectedJourneyId(journeyId);
@@ -81,6 +104,10 @@ function AppContent() {
     setRefreshKey(prev => prev + 1);
   }
 
+  if (!dataLoaded) {
+    return <div className="min-h-screen bg-voya-black" />;
+  }
+
   return (
     <>
       {showSplash ? (
@@ -88,56 +115,54 @@ function AppContent() {
       ) : showAuth ? (
         <AuthScreen onAuthSuccess={() => setShowAuth(false)} />
       ) : (
-        <DataLoader>
-          <div className="min-h-screen bg-voya-black">
-            <Header
-              onNewJourney={() => setShowNewJourneyModal(true)}
-              buttonText={view === 'journey' ? 'New Activity' : 'New Experience'}
+        <div className="min-h-screen bg-voya-black">
+          <Header
+            onNewJourney={() => setShowNewJourneyModal(true)}
+            buttonText={view === 'journey' ? 'New Activity' : 'New Experience'}
+          />
+
+          {view === 'home' ? (
+            <Homepage key={refreshKey} onJourneyClick={handleJourneyClick} />
+          ) : selectedJourneyId ? (
+            <JourneyView
+              key={refreshKey}
+              journeyId={selectedJourneyId}
+              onBack={handleBack}
+              onAddExperience={handleAddExperience}
+              onAISuggest={handleAISuggest}
+              onViewSummary={() => setShowTripSummary(true)}
             />
+          ) : null}
 
-            {view === 'home' ? (
-              <Homepage key={refreshKey} onJourneyClick={handleJourneyClick} />
-            ) : selectedJourneyId ? (
-              <JourneyView
-                key={refreshKey}
-                journeyId={selectedJourneyId}
-                onBack={handleBack}
-                onAddExperience={handleAddExperience}
-                onAISuggest={handleAISuggest}
-                onViewSummary={() => setShowTripSummary(true)}
-              />
-            ) : null}
+          <NewJourneyModal
+            isOpen={showNewJourneyModal}
+            onClose={() => setShowNewJourneyModal(false)}
+            onCreated={handleNewJourneyCreated}
+          />
 
-            <NewJourneyModal
-              isOpen={showNewJourneyModal}
-              onClose={() => setShowNewJourneyModal(false)}
-              onCreated={handleNewJourneyCreated}
+          <AddExperienceModal
+            isOpen={showAddExperienceModal}
+            dayId={selectedDayId}
+            onClose={() => setShowAddExperienceModal(false)}
+            onAdded={handleExperienceAdded}
+          />
+
+          <AISuggestModal
+            isOpen={showAISuggestModal}
+            dayId={selectedDayId || ''}
+            destination={selectedJourneyDestination}
+            onClose={() => setShowAISuggestModal(false)}
+            onExperienceAdded={handleAISuggestComplete}
+          />
+
+          {selectedJourneyId && (
+            <TripSummary
+              journeyId={selectedJourneyId}
+              isOpen={showTripSummary}
+              onClose={() => setShowTripSummary(false)}
             />
-
-            <AddExperienceModal
-              isOpen={showAddExperienceModal}
-              dayId={selectedDayId}
-              onClose={() => setShowAddExperienceModal(false)}
-              onAdded={handleExperienceAdded}
-            />
-
-            <AISuggestModal
-              isOpen={showAISuggestModal}
-              dayId={selectedDayId || ''}
-              destination={selectedJourneyDestination}
-              onClose={() => setShowAISuggestModal(false)}
-              onExperienceAdded={handleAISuggestComplete}
-            />
-
-            {selectedJourneyId && (
-              <TripSummary
-                journeyId={selectedJourneyId}
-                isOpen={showTripSummary}
-                onClose={() => setShowTripSummary(false)}
-              />
-            )}
-          </div>
-        </DataLoader>
+          )}
+        </div>
       )}
     </>
   );
