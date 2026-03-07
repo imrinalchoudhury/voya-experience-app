@@ -4,11 +4,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
 export function DataLoader({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const initData = async () => {
+      if (authLoading) {
+        return;
+      }
+
       if (!user) {
         setLoaded(true);
         return;
@@ -28,7 +32,7 @@ export function DataLoader({ children }: { children: React.ReactNode }) {
     };
 
     initData();
-  }, [user]);
+  }, [user, authLoading]);
 
   if (!loaded) {
     return (
