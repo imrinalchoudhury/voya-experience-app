@@ -9,6 +9,7 @@ import { AISuggestModal } from './components/AISuggestModal';
 import { SplashScreen } from './components/SplashScreen';
 import { TripSummary } from './components/TripSummary';
 import { AuthScreen } from './components/AuthScreen';
+import { AIConciergeChat } from './components/AIConciergeChat';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import { loadSampleData } from './scripts/loadSampleData';
@@ -182,6 +183,8 @@ function AppContent() {
           onClose={() => setShowTripSummary(false)}
         />
       )}
+
+      <AIConciergeChat />
     </div>
   );
 }
