@@ -35,6 +35,7 @@ interface JourneyViewProps {
   onAddExperience: (dayId: string) => void;
   onAISuggest: (dayId: string, destination: string) => void;
   onViewSummary: () => void;
+  isReadOnly?: boolean;
 }
 
 const categoryColors: Record<string, string> = {
@@ -47,7 +48,7 @@ const categoryColors: Record<string, string> = {
   shopping: '#C9A96E',
 };
 
-export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, onViewSummary }: JourneyViewProps) {
+export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, onViewSummary, isReadOnly = false }: JourneyViewProps) {
   const [journey, setJourney] = useState<Journey | null>(null);
   const [days, setDays] = useState<Day[]>([]);
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null);
@@ -191,14 +192,16 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
               View Summary →
             </button>
 
-            <button
-              onClick={() => setShareModalOpen(true)}
-              className="w-full px-4 py-3 border border-voya-gold/40 text-voya-gold hover:bg-voya-gold/10 transition-all duration-300 font-montserrat uppercase flex items-center justify-center gap-2"
-              style={{ fontSize: '9px', letterSpacing: '2px' }}
-            >
-              <Share2 size={14} />
-              ⟶ Share Journey
-            </button>
+            {!isReadOnly && (
+              <button
+                onClick={() => setShareModalOpen(true)}
+                className="w-full px-4 py-3 border border-voya-gold/40 text-voya-gold hover:bg-voya-gold/10 transition-all duration-300 font-montserrat uppercase flex items-center justify-center gap-2"
+                style={{ fontSize: '9px', letterSpacing: '2px' }}
+              >
+                <Share2 size={14} />
+                ⟶ Share Journey
+              </button>
+            )}
           </div>
         </div>
 
@@ -226,6 +229,14 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
         <div className="max-w-4xl mx-auto px-16 py-12">
           {selectedDay && (
             <>
+              {isReadOnly && (
+                <div className="mb-8 pb-6 border-b border-voya-gold/20">
+                  <p className="font-cormorant italic text-voya-gold/60 text-lg">
+                    This journey has been completed and archived.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-start justify-between mb-12">
                 <div>
                   <div className="font-montserrat text-xs text-voya-gold/50 tracking-wider uppercase mb-2">
@@ -233,22 +244,24 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
                   </div>
                   <h3 className="font-cormorant text-5xl font-light">{formatDate(selectedDay.date)}</h3>
                 </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => onAISuggest(selectedDay.id, journey.destination)}
-                    className="px-5 py-2.5 bg-transparent border border-[#C9A96E] text-[#C9A96E] font-montserrat uppercase hover:bg-voya-gold/10 transition-colors"
-                    style={{ fontSize: '11px', letterSpacing: '2px' }}
-                  >
-                    ✦ Suggest with AI
-                  </button>
-                  <button
-                    onClick={() => onAddExperience(selectedDay.id)}
-                    className="flex items-center gap-2 px-5 py-2 bg-transparent border border-voya-gold text-voya-gold font-montserrat text-sm tracking-wider hover:bg-voya-gold/10 transition-colors"
-                  >
-                    <Plus size={14} />
-                    Activity
-                  </button>
-                </div>
+                {!isReadOnly && (
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => onAISuggest(selectedDay.id, journey.destination)}
+                      className="px-5 py-2.5 bg-transparent border border-[#C9A96E] text-[#C9A96E] font-montserrat uppercase hover:bg-voya-gold/10 transition-colors"
+                      style={{ fontSize: '11px', letterSpacing: '2px' }}
+                    >
+                      ✦ Suggest with AI
+                    </button>
+                    <button
+                      onClick={() => onAddExperience(selectedDay.id)}
+                      className="flex items-center gap-2 px-5 py-2 bg-transparent border border-voya-gold text-voya-gold font-montserrat text-sm tracking-wider hover:bg-voya-gold/10 transition-colors"
+                    >
+                      <Plus size={14} />
+                      Activity
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="relative pl-12">

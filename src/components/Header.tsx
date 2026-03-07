@@ -5,18 +5,47 @@ import { useAuth } from '../contexts/AuthContext';
 interface HeaderProps {
   onNewJourney: () => void;
   buttonText?: string;
+  currentView?: 'journeys' | 'archive';
+  onViewChange?: (view: 'journeys' | 'archive') => void;
 }
 
-export function Header({ onNewJourney, buttonText = 'New Experience' }: HeaderProps) {
+export function Header({ onNewJourney, buttonText = 'New Experience', currentView = 'journeys', onViewChange }: HeaderProps) {
   const { user, signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-voya-black/90 backdrop-blur-sm border-b border-voya-gold/10">
       <div className="max-w-[1600px] mx-auto px-12 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-1">
-          <span className="font-montserrat font-light text-2xl tracking-[0.3em]">VOYA</span>
-          <span className="w-1.5 h-1.5 bg-voya-gold rounded-full mt-2"></span>
+        <div className="flex items-center gap-12">
+          <div className="flex items-center gap-1">
+            <span className="font-montserrat font-light text-2xl tracking-[0.3em]">VOYA</span>
+            <span className="w-1.5 h-1.5 bg-voya-gold rounded-full mt-2"></span>
+          </div>
+
+          {onViewChange && (
+            <div className="flex items-center gap-8">
+              <button
+                onClick={() => onViewChange('journeys')}
+                className={`font-montserrat text-[9px] tracking-[3px] uppercase transition-all pb-1 border-b-2 ${
+                  currentView === 'journeys'
+                    ? 'text-voya-gold border-voya-gold'
+                    : 'text-voya-gold/40 border-transparent hover:text-voya-gold/60'
+                }`}
+              >
+                Journeys
+              </button>
+              <button
+                onClick={() => onViewChange('archive')}
+                className={`font-montserrat text-[9px] tracking-[3px] uppercase transition-all pb-1 border-b-2 ${
+                  currentView === 'archive'
+                    ? 'text-voya-gold border-voya-gold'
+                    : 'text-voya-gold/40 border-transparent hover:text-voya-gold/60'
+                }`}
+              >
+                Archive
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-6">

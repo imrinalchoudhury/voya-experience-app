@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Homepage } from './components/Homepage';
+import { Archive } from './components/Archive';
 import { JourneyView } from './components/JourneyView';
 import { NewJourneyModal } from './components/NewJourneyModal';
 import { AddExperienceModal } from './components/AddExperienceModal';
@@ -17,8 +18,9 @@ function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
-  const [view, setView] = useState<'home' | 'journey'>('home');
+  const [view, setView] = useState<'home' | 'archive' | 'journey'>('home');
   const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null);
+  const [isArchivedJourney, setIsArchivedJourney] = useState(false);
   const [showNewJourneyModal, setShowNewJourneyModal] = useState(false);
   const [showAddExperienceModal, setShowAddExperienceModal] = useState(false);
   const [showAISuggestModal, setShowAISuggestModal] = useState(false);
@@ -61,14 +63,22 @@ function AppContent() {
     initData();
   }, [user, loading, showSplash]);
 
-  function handleJourneyClick(journeyId: string) {
+  function handleJourneyClick(journeyId: string, isArchived = false) {
     setSelectedJourneyId(journeyId);
+    setIsArchivedJourney(isArchived);
     setView('journey');
   }
 
   function handleBack() {
-    setView('home');
+    const targetView = isArchivedJourney ? 'archive' : 'home';
+    setView(targetView);
     setSelectedJourneyId(null);
+    setIsArchivedJourney(false);
+    setRefreshKey(prev => prev + 1);
+  }
+
+  function handleViewChange(newView: 'journeys' | 'archive') {
+    setView(newView === 'journeys' ? 'home' : 'archive');
     setRefreshKey(prev => prev + 1);
   }
 
@@ -117,10 +127,21 @@ function AppContent() {
       <Header
         onNewJourney={() => setShowNewJourneyModal(true)}
         buttonText={view === 'journey' ? 'New Activity' : 'New Experience'}
+        currentView={view === 'home' ? 'journeys' : view === 'archive' ? 'archive' : undefined}
+        onViewChange={view !== 'journey' ? handleViewChange : undefined}
       />
 
       {view === 'home' ? (
-        <Homepage key={refreshKey} onJourneyClick={handleJourneyClick} />
+        <Homepage
+          key={refreshKey}
+          onJourneyClick={(id) => handleJourneyClick(id, false)}
+          onJourneysChange={() => setRefreshKey(prev => prev + 1)}
+        />
+      ) : view === 'archive' ? (
+        <Archive
+          key={refreshKey}
+          onJourneySelect={(id) => handleJourneyClick(id, true)}
+        />
       ) : selectedJourneyId ? (
         <JourneyView
           key={refreshKey}
@@ -129,6 +150,7 @@ function AppContent() {
           onAddExperience={handleAddExperience}
           onAISuggest={handleAISuggest}
           onViewSummary={() => setShowTripSummary(true)}
+          isReadOnly={isArchivedJourney}
         />
       ) : null}
 
