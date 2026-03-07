@@ -253,41 +253,42 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, onReserve, isC
 
   return (
     <div className="relative bg-voya-card border border-voya-gold/20 p-8 transition-all hover:border-voya-gold/60 hover:shadow-[0_0_30px_rgba(201,169,110,0.15)] group">
-      {journey.reserved && (
-        <div className="absolute top-3 right-3 bg-[rgba(201,169,110,0.15)] border border-[rgba(201,169,110,0.4)] px-[10px] py-1 font-montserrat text-[8px] tracking-[0.15em] uppercase text-[#C9A96E] z-10">
-          Reserved ✦
-        </div>
-      )}
-
-      <div
-        className="absolute top-6 right-6 z-20"
-        onMouseEnter={() => setShowMenu(true)}
-        onMouseLeave={() => setShowMenu(false)}
-      >
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowMenu(!showMenu);
-          }}
-          className="text-voya-gold/30 hover:text-voya-gold/60 transition-colors text-xl leading-none"
-        >
-          ⋯
-        </button>
-        {showMenu && (
-          <div className="absolute right-0 top-full mt-2 bg-[#111009] border border-voya-gold/20 min-w-[160px] z-10">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMarkCompleted();
-                setShowMenu(false);
-              }}
-              disabled={isCompleting}
-              className="w-full px-4 py-2.5 text-voya-gold/80 hover:text-voya-gold hover:bg-voya-gold/5 font-montserrat text-xs tracking-wide text-left transition-colors disabled:opacity-50"
-            >
-              {isCompleting ? 'Archiving...' : 'Mark as Completed'}
-            </button>
+      <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
+        {journey.reserved && (
+          <div className="bg-[rgba(201,169,110,0.15)] border border-[rgba(201,169,110,0.4)] px-[10px] py-1 font-montserrat text-[8px] tracking-[0.15em] uppercase text-[#C9A96E]">
+            Reserved ✦
           </div>
         )}
+
+        <div
+          onMouseEnter={() => setShowMenu(true)}
+          onMouseLeave={() => setShowMenu(false)}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+            className="text-voya-gold/30 hover:text-voya-gold/60 transition-colors text-xl leading-none"
+          >
+            ⋯
+          </button>
+          {showMenu && (
+            <div className="absolute right-0 top-full mt-2 bg-[#111009] border border-voya-gold/20 min-w-[160px] z-10">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMarkCompleted();
+                  setShowMenu(false);
+                }}
+                disabled={isCompleting}
+                className="w-full px-4 py-2.5 text-voya-gold/80 hover:text-voya-gold hover:bg-voya-gold/5 font-montserrat text-xs tracking-wide text-left transition-colors disabled:opacity-50"
+              >
+                {isCompleting ? 'Archiving...' : 'Mark as Completed'}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div onClick={onClick} className="cursor-pointer">
