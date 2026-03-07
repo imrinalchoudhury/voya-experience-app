@@ -112,21 +112,29 @@ export function Homepage({ onJourneyClick, onJourneysChange }: HomepageProps) {
         .eq('journey_id', reservationModalJourney.id)
         .order('day_number', { ascending: true });
 
-      await fetch('https://voya-share.webhook.n8n.cloud', {
+      const payload = {
+        body: {
+          title: reservationModalJourney.title,
+          destination: reservationModalJourney.destination,
+          startDate: reservationModalJourney.depart_date,
+          endDate: reservationModalJourney.return_date,
+          days: daysData || [],
+          recipientEmail: user.email,
+          emailType: 'reservation'
+        }
+      };
+
+      console.log('Sending reservation webhook payload:', payload);
+
+      const response = await fetch('https://mrin.app.n8n.cloud/webhook/voya-share', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          body: {
-            title: reservationModalJourney.title,
-            destination: reservationModalJourney.destination,
-            startDate: reservationModalJourney.depart_date,
-            endDate: reservationModalJourney.return_date,
-            days: daysData || [],
-            recipientEmail: user.email,
-            emailType: 'reservation'
-          }
-        })
+        body: JSON.stringify(payload)
       });
+
+      console.log('Webhook response status:', response.status);
+      const responseBody = await response.text();
+      console.log('Webhook response body:', responseBody);
 
       setToastMessage('Your journey has been reserved. Confirmation dispatched. ✦');
     } catch (error) {
