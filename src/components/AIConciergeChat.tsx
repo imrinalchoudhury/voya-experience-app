@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { MarkdownRenderer } from '../utils/markdownRenderer';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -108,14 +109,18 @@ export function AIConciergeChat() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] px-4 py-3 rounded-lg ${
+                  className={`max-w-[80%] rounded-lg ${
                     message.role === 'user'
-                      ? 'bg-[rgba(201,169,110,0.15)] text-white border border-[rgba(201,169,110,0.3)]'
-                      : 'bg-[#0C0A07] text-[#E5E5E5] border border-[rgba(201,169,110,0.1)]'
+                      ? 'bg-[rgba(201,169,110,0.15)] text-white border border-[rgba(201,169,110,0.3)] px-4 py-3'
+                      : 'bg-[#0C0A07] text-[#E5E5E5] border border-[rgba(201,169,110,0.1)] px-[18px] py-4'
                   }`}
-                  style={{ fontFamily: 'Cormorant Garamond', fontSize: '15px', lineHeight: '1.6' }}
+                  style={{ fontFamily: 'Cormorant Garamond', fontSize: '15px', lineHeight: '1.7' }}
                 >
-                  {message.content}
+                  {message.role === 'assistant' ? (
+                    <MarkdownRenderer content={message.content} />
+                  ) : (
+                    message.content
+                  )}
                 </div>
               </div>
             ))}
