@@ -7,9 +7,13 @@ import { AddExperienceModal } from './components/AddExperienceModal';
 import { AISuggestModal } from './components/AISuggestModal';
 import { SplashScreen } from './components/SplashScreen';
 import { TripSummary } from './components/TripSummary';
+import { AuthScreen } from './components/AuthScreen';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-function App() {
+function AppContent() {
+  const { user, loading } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
+  const [showAuth, setShowAuth] = useState(false);
   const [view, setView] = useState<'home' | 'journey'>('home');
   const [selectedJourneyId, setSelectedJourneyId] = useState<string | null>(null);
   const [showNewJourneyModal, setShowNewJourneyModal] = useState(false);
@@ -26,6 +30,16 @@ function App() {
       setShowSplash(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!loading && !showSplash) {
+      if (!user) {
+        setShowAuth(true);
+      } else {
+        setShowAuth(false);
+      }
+    }
+  }, [user, loading, showSplash]);
 
   function handleJourneyClick(journeyId: string) {
     setSelectedJourneyId(journeyId);
@@ -70,6 +84,8 @@ function App() {
     <>
       {showSplash ? (
         <SplashScreen onComplete={() => setShowSplash(false)} />
+      ) : showAuth ? (
+        <AuthScreen onAuthSuccess={() => setShowAuth(false)} />
       ) : (
         <div className="min-h-screen bg-voya-black">
           <Header
@@ -121,6 +137,14 @@ function App() {
         </div>
       )}
     </>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

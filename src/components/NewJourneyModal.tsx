@@ -44,6 +44,9 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const { data: journey, error: journeyError } = await supabase
         .from('journeys')
         .insert({
@@ -53,6 +56,7 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
           tagline: formData.tagline,
           depart_date: formData.departDate,
           return_date: formData.returnDate,
+          user_id: user.id,
         })
         .select()
         .single();
