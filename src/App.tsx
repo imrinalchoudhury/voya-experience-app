@@ -136,7 +136,6 @@ function AppContent() {
           key={refreshKey}
           onJourneyClick={(id) => handleJourneyClick(id, false)}
           onJourneysChange={() => setRefreshKey(prev => prev + 1)}
-          onNewJourney={() => setShowNewJourneyModal(true)}
         />
       ) : view === 'archive' ? (
         <Archive

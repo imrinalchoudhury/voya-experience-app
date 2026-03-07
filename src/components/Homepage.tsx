@@ -16,10 +16,9 @@ interface Journey {
 interface HomepageProps {
   onJourneyClick: (journeyId: string) => void;
   onJourneysChange?: () => void;
-  onNewJourney?: () => void;
 }
 
-export function Homepage({ onJourneyClick, onJourneysChange, onNewJourney }: HomepageProps) {
+export function Homepage({ onJourneyClick, onJourneysChange }: HomepageProps) {
   const { user } = useAuth();
   const [journeys, setJourneys] = useState<Journey[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,32 +97,32 @@ export function Homepage({ onJourneyClick, onJourneysChange, onNewJourney }: Hom
   return (
     <div className="min-h-screen pt-20">
       {showConfirmation && (
-        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-voya-card border border-voya-gold/30 px-6 md:px-8 py-3 md:py-4 animate-fadeIn max-w-[90%] md:max-w-none">
-          <p className="font-cormorant italic text-voya-gold text-lg md:text-xl">
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-voya-card border border-voya-gold/30 px-8 py-4 animate-fadeIn">
+          <p className="font-cormorant italic text-voya-gold text-xl">
             Journey archived. ✦
           </p>
         </div>
       )}
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-12 py-12 md:py-20">
-        <div className="mb-12 md:mb-24">
-          <div className="text-voya-gold/60 font-montserrat text-[9px] md:text-[10px] tracking-[0.3em] uppercase mb-4 md:mb-6">
+      <div className="max-w-[1600px] mx-auto px-12 py-20">
+        <div className="mb-24">
+          <div className="text-voya-gold/60 font-montserrat text-[10px] tracking-[0.3em] uppercase mb-6">
             LUXURY TRAVEL PLANNER
           </div>
-          <h1 className="font-cormorant text-4xl md:text-7xl font-light leading-tight">
+          <h1 className="font-cormorant text-7xl font-light leading-tight">
             Every experience,<br />
             <span className="italic text-voya-gold">curated.</span>
           </h1>
         </div>
 
         {journeys.length === 0 ? (
-          <div className="text-center py-12 md:py-20">
+          <div className="text-center py-20">
             <div className="text-voya-gold/30 font-montserrat text-sm tracking-wider">
               No experiences yet. Begin your first experience above.
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {journeys.map((journey) => (
               <JourneyCard
                 key={journey.id}
@@ -137,16 +136,6 @@ export function Homepage({ onJourneyClick, onJourneysChange, onNewJourney }: Hom
           </div>
         )}
       </div>
-
-      {onNewJourney && (
-        <button
-          onClick={onNewJourney}
-          className="md:hidden fixed bottom-6 left-4 right-4 z-40 flex items-center justify-center gap-2 px-6 py-4 bg-voya-gold text-voya-black font-montserrat text-sm tracking-wider hover:bg-voya-gold/90 transition-colors"
-        >
-          <Plus size={16} />
-          New Journey
-        </button>
-      )}
     </div>
   );
 }
@@ -190,9 +179,9 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, isCompleting }
   }
 
   return (
-    <div className="relative bg-voya-card border border-voya-gold/20 p-6 md:p-8 transition-all hover:border-voya-gold/60 hover:shadow-[0_0_30px_rgba(201,169,110,0.15)] group">
+    <div className="relative bg-voya-card border border-voya-gold/20 p-8 transition-all hover:border-voya-gold/60 hover:shadow-[0_0_30px_rgba(201,169,110,0.15)] group">
       <div
-        className="absolute top-4 md:top-6 right-4 md:right-6"
+        className="absolute top-6 right-6"
         onMouseEnter={() => setShowMenu(true)}
         onMouseLeave={() => setShowMenu(false)}
       >
@@ -223,31 +212,31 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, isCompleting }
       </div>
 
       <div onClick={onClick} className="cursor-pointer">
-        <div className="flex items-start gap-2 mb-3 md:mb-4 text-voya-gold/50 font-montserrat text-[9px] md:text-[10px] tracking-[0.2em] uppercase">
-          <MapPin size={11} className="mt-0.5" />
+        <div className="flex items-start gap-2 mb-4 text-voya-gold/50 font-montserrat text-[10px] tracking-[0.2em] uppercase">
+          <MapPin size={12} className="mt-0.5" />
           <span>{journey.destination}</span>
         </div>
 
-      <h3 className="font-cormorant text-2xl md:text-3xl font-light mb-2 group-hover:text-voya-gold transition-colors">
+      <h3 className="font-cormorant text-3xl font-light mb-2 group-hover:text-voya-gold transition-colors">
         {journey.title}
       </h3>
 
-      <p className="font-cormorant italic text-voya-gold/70 text-base md:text-lg mb-4 md:mb-6">
+      <p className="font-cormorant italic text-voya-gold/70 text-lg mb-6">
         {journey.tagline}
       </p>
 
-      <div className="flex items-center gap-4 md:gap-6 text-xs md:text-sm font-montserrat text-white/60">
-        <div className="flex items-center gap-1.5 md:gap-2">
-          <Calendar size={13} />
+      <div className="flex items-center gap-6 text-sm font-montserrat text-white/60">
+        <div className="flex items-center gap-2">
+          <Calendar size={14} />
           <span>{nights} nights</span>
         </div>
-        <div className="flex items-center gap-1.5 md:gap-2">
-          <Sparkles size={13} />
+        <div className="flex items-center gap-2">
+          <Sparkles size={14} />
           <span>{experienceCount} activities</span>
         </div>
       </div>
 
-        <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-voya-gold/10 text-[10px] md:text-xs font-montserrat text-voya-gold/50 tracking-wider">
+        <div className="mt-6 pt-6 border-t border-voya-gold/10 text-xs font-montserrat text-voya-gold/50 tracking-wider">
           Departs {formatDate(journey.depart_date)}
         </div>
       </div>
