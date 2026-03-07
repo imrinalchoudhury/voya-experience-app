@@ -18,7 +18,7 @@ export function Header({ onNewJourney, buttonText = 'New Experience', currentVie
 
     const fullName = user.user_metadata?.full_name;
     if (fullName) {
-      return fullName.split(' ')[0];
+      return fullName;
     }
 
     return user.email?.split('@')[0] || '';
