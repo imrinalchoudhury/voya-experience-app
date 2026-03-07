@@ -58,21 +58,17 @@ export function Header({ onNewJourney, buttonText = 'New Experience', currentVie
           </button>
 
           {user && (
-            <div className="relative">
-              <button
-                onMouseEnter={() => setShowUserMenu(true)}
-                onMouseLeave={() => setShowUserMenu(false)}
-                className="text-voya-gold/60 hover:text-voya-gold font-montserrat text-xs tracking-wide transition-colors"
-              >
+            <div
+              className="relative"
+              onMouseEnter={() => setShowUserMenu(true)}
+              onMouseLeave={() => setShowUserMenu(false)}
+            >
+              <button className="text-voya-gold/60 hover:text-voya-gold font-montserrat text-xs tracking-wide transition-colors">
                 {user.email}
               </button>
 
               {showUserMenu && (
-                <div
-                  onMouseEnter={() => setShowUserMenu(true)}
-                  onMouseLeave={() => setShowUserMenu(false)}
-                  className="absolute right-0 top-full mt-2 bg-[#111009] border border-voya-gold/20 min-w-[120px]"
-                >
+                <div className="absolute right-0 top-full bg-[#111009] border border-voya-gold/20 min-w-[120px] pt-1">
                   <button
                     onClick={signOut}
                     className="w-full px-4 py-2 text-voya-gold/80 hover:text-voya-gold hover:bg-voya-gold/5 font-montserrat text-xs tracking-wide text-left transition-colors"
