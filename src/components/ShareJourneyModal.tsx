@@ -39,16 +39,27 @@ export function ShareJourneyModal({ isOpen, onClose, tripData }: ShareJourneyMod
     try {
       const trip = await tripData();
 
-      const response = await fetch('https://mrin.app.n8n.cloud/webhook/voya-share', {
+      const url = 'https://mrin.app.n8n.cloud/webhook/voya-share';
+      const payload = {
+        body: {
+          ...trip,
+          recipientEmail: email,
+        },
+      };
+
+      console.log('Sending to webhook URL:', url);
+      console.log('Payload:', JSON.stringify(payload, null, 2));
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          body: trip,
-          recipientEmail: email,
-        }),
+        body: JSON.stringify(payload),
       });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
 
       if (!response.ok) throw new Error('Failed to send');
 
