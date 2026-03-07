@@ -143,8 +143,8 @@ const sampleJourneys = [
   },
 ];
 
-export async function loadSampleData() {
-  console.log('Loading sample data...');
+export async function loadSampleData(userId: string) {
+  console.log('Loading sample data for user:', userId);
 
   for (const journeyData of sampleJourneys) {
     const { title, destination, category, tagline, depart_date, return_date, days } = journeyData;
@@ -153,6 +153,7 @@ export async function loadSampleData() {
       .from('journeys')
       .select('id')
       .eq('title', title)
+      .eq('user_id', userId)
       .maybeSingle();
 
     if (existingJourney) {
@@ -169,6 +170,7 @@ export async function loadSampleData() {
         tagline,
         depart_date,
         return_date,
+        user_id: userId,
       })
       .select()
       .single();

@@ -1,23 +1,34 @@
 import { useEffect, useState } from 'react';
 import { loadSampleData } from '../scripts/loadSampleData';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export function DataLoader({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const initData = async () => {
-      const hasLoadedData = localStorage.getItem('voya_data_loaded');
+      if (!user) {
+        setLoaded(true);
+        return;
+      }
 
-      if (!hasLoadedData) {
-        await loadSampleData();
-        localStorage.setItem('voya_data_loaded', 'true');
+      const { data: journeys } = await supabase
+        .from('journeys')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (!journeys || journeys.length === 0) {
+        await loadSampleData(user.id);
       }
 
       setLoaded(true);
     };
 
     initData();
-  }, []);
+  }, [user]);
 
   if (!loaded) {
     return (
