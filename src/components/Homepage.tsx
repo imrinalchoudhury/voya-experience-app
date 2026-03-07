@@ -246,13 +246,13 @@ function JourneyCard({ journey, nights, onClick, onMarkCompleted, onReserve, isC
   return (
     <div className="relative bg-voya-card border border-voya-gold/20 p-8 transition-all hover:border-voya-gold/60 hover:shadow-[0_0_30px_rgba(201,169,110,0.15)] group">
       {journey.reserved && (
-        <div className="absolute top-6 left-6 bg-[rgba(201,169,110,0.15)] border border-[rgba(201,169,110,0.4)] px-[10px] py-1 font-montserrat text-[8px] tracking-[0.15em] uppercase text-[#C9A96E]">
+        <div className="absolute top-3 right-3 bg-[rgba(201,169,110,0.15)] border border-[rgba(201,169,110,0.4)] px-[10px] py-1 font-montserrat text-[8px] tracking-[0.15em] uppercase text-[#C9A96E] z-10">
           Reserved ✦
         </div>
       )}
 
       <div
-        className="absolute top-6 right-6"
+        className="absolute top-6 right-6 z-20"
         onMouseEnter={() => setShowMenu(true)}
         onMouseLeave={() => setShowMenu(false)}
       >
