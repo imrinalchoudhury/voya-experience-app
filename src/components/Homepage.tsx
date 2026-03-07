@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import { Calendar, MapPin, Sparkles } from 'lucide-react';
 
 interface Journey {
@@ -17,17 +18,23 @@ interface HomepageProps {
 }
 
 export function Homepage({ onJourneyClick }: HomepageProps) {
+  const { user } = useAuth();
   const [journeys, setJourneys] = useState<Journey[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadJourneys();
-  }, []);
+    if (user) {
+      loadJourneys();
+    }
+  }, [user]);
 
   async function loadJourneys() {
+    if (!user) return;
+
     const { data, error } = await supabase
       .from('journeys')
       .select('*')
+      .eq('user_id', user.id)
       .order('depart_date', { ascending: true });
 
     if (error) {
