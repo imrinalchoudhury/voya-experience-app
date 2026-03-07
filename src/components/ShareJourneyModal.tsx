@@ -39,7 +39,7 @@ export function ShareJourneyModal({ isOpen, onClose, tripData }: ShareJourneyMod
     try {
       const trip = await tripData();
 
-      const response = await fetch('YOUR_N8N_WEBHOOK_URL_HERE', {
+      const response = await fetch('https://mrin.app.n8n.cloud/webhook/voya-share', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
