@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { DatePicker } from './DatePicker';
 
 interface NewJourneyModalProps {
   isOpen: boolean;
@@ -176,24 +177,24 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
               <label className="block font-montserrat text-xs text-voya-gold/60 tracking-wider uppercase mb-3">
                 Departs
               </label>
-              <input
-                type="date"
+              <DatePicker
                 required
                 value={formData.departDate}
-                onChange={(e) => setFormData({ ...formData, departDate: e.target.value })}
-                className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-white transition-colors"
+                onChange={(value) => setFormData({ ...formData, departDate: value })}
+                className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-white transition-colors cursor-pointer"
+                placeholder="Select departure date"
               />
             </div>
             <div>
               <label className="block font-montserrat text-xs text-voya-gold/60 tracking-wider uppercase mb-3">
                 Returns
               </label>
-              <input
-                type="date"
+              <DatePicker
                 required
                 value={formData.returnDate}
-                onChange={(e) => setFormData({ ...formData, returnDate: e.target.value })}
-                className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-white transition-colors"
+                onChange={(value) => setFormData({ ...formData, returnDate: value })}
+                className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-white transition-colors cursor-pointer"
+                placeholder="Select return date"
               />
             </div>
           </div>
