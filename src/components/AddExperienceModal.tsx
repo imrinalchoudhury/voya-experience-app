@@ -22,10 +22,11 @@ const categories = [
 export function AddExperienceModal({ isOpen, dayId, onClose, onAdded }: AddExperienceModalProps) {
   const [formData, setFormData] = useState({
     title: '',
-    time: '',
     category: 'dining',
     conciergeDetails: '',
   });
+  const [hours, setHours] = useState('10');
+  const [minutes, setMinutes] = useState('00');
   const [loading, setLoading] = useState(false);
 
   if (!isOpen || !dayId) return null;
@@ -35,10 +36,12 @@ export function AddExperienceModal({ isOpen, dayId, onClose, onAdded }: AddExper
     setLoading(true);
 
     try {
+      const timeString = `${hours}:${minutes}`;
+
       const { error } = await supabase.from('experiences').insert({
         day_id: dayId,
         title: formData.title,
-        time: formData.time,
+        time: timeString,
         category: formData.category,
         concierge_details: formData.conciergeDetails,
       });
@@ -47,10 +50,11 @@ export function AddExperienceModal({ isOpen, dayId, onClose, onAdded }: AddExper
 
       setFormData({
         title: '',
-        time: '',
         category: 'dining',
         conciergeDetails: '',
       });
+      setHours('10');
+      setMinutes('00');
       onAdded();
     } catch (error) {
       console.error('Error adding experience:', error);
@@ -93,13 +97,34 @@ export function AddExperienceModal({ isOpen, dayId, onClose, onAdded }: AddExper
             <label className="block font-montserrat text-xs text-voya-gold/60 tracking-wider uppercase mb-3">
               Time
             </label>
-            <input
-              type="time"
-              required
-              value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="w-full bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-xl text-white transition-colors"
-            />
+            <div className="flex gap-4 items-center">
+              <select
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                className="flex-1 bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-xl text-[#F0EAE0] transition-colors"
+              >
+                {Array.from({ length: 24 }, (_, i) => {
+                  const hour = i.toString().padStart(2, '0');
+                  return (
+                    <option key={hour} value={hour} className="bg-voya-card">
+                      {hour}
+                    </option>
+                  );
+                })}
+              </select>
+              <span className="text-voya-gold/60 text-xl">:</span>
+              <select
+                value={minutes}
+                onChange={(e) => setMinutes(e.target.value)}
+                className="flex-1 bg-transparent border-0 border-b border-voya-gold/30 focus:border-voya-gold outline-none pb-2 font-montserrat text-xl text-[#F0EAE0] transition-colors"
+              >
+                {['00', '15', '30', '45'].map((min) => (
+                  <option key={min} value={min} className="bg-voya-card">
+                    {min}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>
