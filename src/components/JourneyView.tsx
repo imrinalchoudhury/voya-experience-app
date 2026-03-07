@@ -155,8 +155,8 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
   const nights = calculateNights(journey.depart_date, journey.return_date);
 
   return (
-    <div className="min-h-screen pt-20 flex">
-      <aside className="w-[270px] border-r border-voya-gold/20 bg-voya-card/50 flex flex-col">
+    <div className="min-h-screen pt-20 flex flex-col md:flex-row">
+      <aside className="hidden md:flex md:w-[270px] border-r border-voya-gold/20 bg-voya-card/50 flex-col">
         <div className="p-8 border-b border-voya-gold/10">
           <button
             onClick={onBack}
@@ -225,8 +225,45 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
         </div>
       </aside>
 
+      <div className="md:hidden border-b border-voya-gold/20 bg-voya-card/50">
+        <div className="px-4 py-4">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-voya-gold/60 hover:text-voya-gold transition-colors mb-4 font-montserrat text-sm"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+
+          <h2 className="font-cormorant text-2xl font-light mb-1">{journey.title}</h2>
+          <p className="text-voya-gold/60 font-montserrat text-xs tracking-wider">
+            {journey.destination}
+          </p>
+        </div>
+
+        <div className="overflow-x-auto px-4 pb-4">
+          <div className="flex gap-2 min-w-max">
+            {days.map((day) => (
+              <button
+                key={day.id}
+                onClick={() => setSelectedDayId(day.id)}
+                className={`flex-shrink-0 px-4 py-2.5 border transition-all ${
+                  selectedDayId === day.id
+                    ? 'bg-voya-gold/10 border-voya-gold text-voya-gold'
+                    : 'border-voya-gold/30 text-voya-gold/60'
+                }`}
+              >
+                <div className="font-montserrat text-[10px] tracking-wider uppercase whitespace-nowrap">
+                  Day {day.day_number}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-16 py-12">
+        <div className="max-w-4xl mx-auto px-4 md:px-16 py-8 md:py-12">
           {selectedDay && (
             <>
               {isReadOnly && (
@@ -237,25 +274,25 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
                 </div>
               )}
 
-              <div className="flex items-start justify-between mb-12">
-                <div>
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-8 md:mb-12">
+                <div className="mb-4 md:mb-0">
                   <div className="font-montserrat text-xs text-voya-gold/50 tracking-wider uppercase mb-2">
                     Day {selectedDay.day_number}
                   </div>
-                  <h3 className="font-cormorant text-5xl font-light">{formatDate(selectedDay.date)}</h3>
+                  <h3 className="font-cormorant text-3xl md:text-5xl font-light">{formatDate(selectedDay.date)}</h3>
                 </div>
                 {!isReadOnly && (
-                  <div className="flex gap-3">
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-3">
                     <button
                       onClick={() => onAISuggest(selectedDay.id, journey.destination)}
-                      className="px-5 py-2.5 bg-transparent border border-[#C9A96E] text-[#C9A96E] font-montserrat uppercase hover:bg-voya-gold/10 transition-colors"
-                      style={{ fontSize: '11px', letterSpacing: '2px' }}
+                      className="px-4 md:px-5 py-2.5 bg-transparent border border-[#C9A96E] text-[#C9A96E] font-montserrat uppercase hover:bg-voya-gold/10 transition-colors text-center"
+                      style={{ fontSize: '10px', letterSpacing: '2px' }}
                     >
                       ✦ Suggest with AI
                     </button>
                     <button
                       onClick={() => onAddExperience(selectedDay.id)}
-                      className="flex items-center gap-2 px-5 py-2 bg-transparent border border-voya-gold text-voya-gold font-montserrat text-sm tracking-wider hover:bg-voya-gold/10 transition-colors"
+                      className="flex items-center justify-center gap-2 px-4 md:px-5 py-2 bg-transparent border border-voya-gold text-voya-gold font-montserrat text-sm tracking-wider hover:bg-voya-gold/10 transition-colors"
                     >
                       <Plus size={14} />
                       Activity
@@ -264,8 +301,8 @@ export function JourneyView({ journeyId, onBack, onAddExperience, onAISuggest, o
                 )}
               </div>
 
-              <div className="relative pl-12">
-                <div className="absolute left-4 top-0 bottom-0 w-px bg-voya-gold/30"></div>
+              <div className="relative pl-6 md:pl-12">
+                <div className="absolute left-2 md:left-4 top-0 bottom-0 w-px bg-voya-gold/30"></div>
 
                 {experiences.length === 0 ? (
                   <div className="text-voya-gold/30 font-montserrat text-sm tracking-wider py-8">
@@ -309,24 +346,24 @@ function ExperienceRow({ experience }: ExperienceRowProps) {
   return (
     <div className="relative">
       <div
-        className="absolute -left-8 w-3 h-3 rounded-full"
+        className="absolute -left-4 md:-left-8 w-2.5 md:w-3 h-2.5 md:h-3 rounded-full"
         style={{ backgroundColor: color }}
       ></div>
 
-      <div className="flex gap-6">
-        <div className="font-montserrat text-sm text-voya-gold/60 tracking-wider w-16 flex-shrink-0">
+      <div className="flex flex-col md:flex-row gap-2 md:gap-6">
+        <div className="font-montserrat text-xs md:text-sm text-voya-gold/60 tracking-wider md:w-16 flex-shrink-0">
           {experience.time}
         </div>
 
         <div className="flex-1">
-          <h4 className="font-cormorant text-2xl font-light mb-1">{experience.title}</h4>
+          <h4 className="font-cormorant text-xl md:text-2xl font-light mb-1">{experience.title}</h4>
           <div
-            className="font-montserrat text-[9px] tracking-[0.15em] uppercase mb-3"
+            className="font-montserrat text-[9px] tracking-[0.15em] uppercase mb-2 md:mb-3"
             style={{ color }}
           >
             {experience.category}
           </div>
-          <p className="font-cormorant italic text-white/60 text-lg leading-relaxed">
+          <p className="font-cormorant italic text-white/60 text-base md:text-lg leading-relaxed">
             {experience.concierge_details}
           </p>
         </div>

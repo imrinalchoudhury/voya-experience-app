@@ -103,21 +103,22 @@ export function NewJourneyModal({ isOpen, onClose, onCreated }: NewJourneyModalP
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose}></div>
 
       <div className="relative bg-voya-card border border-voya-gold/30 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-voya-card border-b border-voya-gold/20 px-12 py-6 flex items-center justify-between">
-          <h2 className="font-cormorant text-4xl font-light">Begin New Experience</h2>
+        <div className="sticky top-0 bg-voya-card border-b border-voya-gold/20 px-6 md:px-12 py-4 md:py-6 flex items-center justify-between">
+          <h2 className="font-cormorant text-2xl md:text-4xl font-light">Begin New Experience</h2>
           <button
             onClick={onClose}
             className="text-voya-gold/60 hover:text-voya-gold transition-colors"
           >
-            <X size={24} />
+            <X size={20} className="md:hidden" />
+            <X size={24} className="hidden md:block" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-12 space-y-8">
+        <form onSubmit={handleSubmit} className="p-6 md:p-12 space-y-6 md:space-y-8">
           <div>
             <label className="block font-montserrat text-xs text-voya-gold/60 tracking-wider uppercase mb-3">
               Journey Title
